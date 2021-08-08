@@ -10,8 +10,13 @@ import java.util.List;
 
 @Service
 public class MealService implements IMealService {
-    @Autowired
+
     private IMealProvider mealProvider;
+
+    @Autowired
+    public MealService(IMealProvider mealProvider) {
+        this.mealProvider = mealProvider;
+    }
 
     @Override
     public List<Meal> getAllMealsFiltered(Long ingredientID, String firstLetter, String category, String area) {

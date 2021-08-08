@@ -18,10 +18,14 @@ import java.util.stream.Collectors;
 public class MealProvider implements IMealProvider {
     private static final String API = "https://www.themealdb.com/api";
 
-    @Autowired
     private IMealRepository mealRepository;
-    @Autowired
     private IIngredientRepository ingredientRepository;
+
+    @Autowired
+    public MealProvider(IMealRepository mealRepository, IIngredientRepository ingredientRepository) {
+        this.mealRepository = mealRepository;
+        this.ingredientRepository = ingredientRepository;
+    }
 
     @Override
     public Meal getMeal(String endpoint) {
