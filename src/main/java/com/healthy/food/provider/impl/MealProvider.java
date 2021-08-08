@@ -1,24 +1,34 @@
-package com.healthy.food.services;
+package com.healthy.food.provider.impl;
 
-import com.healthy.food.entities.Ingredient;
-import com.healthy.food.entities.Meal;
-import com.healthy.food.providers.impl.MealProvider;
-import com.healthy.food.repositories.IngredientRepository;
-import com.healthy.food.repositories.MealRepository;
-import org.springframework.stereotype.Service;
+import com.healthy.food.model.Ingredient;
+import com.healthy.food.model.Meal;
+import com.healthy.food.provider.IMealProvider;
+import com.healthy.food.repository.IIngredientRepository;
+import com.healthy.food.repository.IMealRepository;
+import com.healthy.food.util.HttpClientConnection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
-import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-public class MealService {
+@Configuration
+@ComponentScan
+public class MealProvider implements IMealProvider {
+    private static final String API = "https://www.themealdb.com/api";
 
-    private MealRepository mealRepository;
-    private IngredientRepository ingredientRepository;
+    @Autowired
+    private IMealRepository mealRepository;
+    @Autowired
+    private IIngredientRepository ingredientRepository;
 
-    private static HttpURLConnection connection;
+    @Override
+    public Meal getMeal(String endpoint) {
+        return HttpClientConnection.getModel(Meal.class, API, endpoint);
+    }
 
+    @Override
     public List<Meal> getAllMealsFilteredByIngredientID(Long ingredientID) {
         Ingredient ingredientFound = ingredientRepository.findById(ingredientID).get();
         List<Meal> listOfMeals = (List<Meal>) mealRepository.findAll();
@@ -27,13 +37,16 @@ public class MealService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<Meal> getAllMealsFilteredByFirstLetterPartialOrFullName(String firstLetter) {
         List<Meal> listOfMeals = (List<Meal>) mealRepository.findAll();
         return listOfMeals.stream()
-                .filter(e -> e.getName().contains(firstLetter))
+                .filter(e -> e.getName().startsWith(firstLetter))
+                .sorted()
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<Meal> getAllMealsFilteredByCategory(String category) {
         List<Meal> listOfMeals = (List<Meal>) mealRepository.findAll();
         return listOfMeals.stream()
@@ -41,18 +54,11 @@ public class MealService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<Meal> getAllMealsFilteredByArea(String area) {
         List<Meal> listOfMeals = (List<Meal>) mealRepository.findAll();
         return listOfMeals.stream()
                 .filter(e -> e.getArea().equals(area))
                 .collect(Collectors.toList());
     }
-
-
-    //facade endpoint based on a request to the free api www.themealdb.com
-    public Meal getRandomMeal() {
-        MealProvider mealProvider = new MealProvider();
-        return mealProvider.getMeal("/json/v1/1/random.php");
-    }
-
 }

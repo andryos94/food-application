@@ -1,9 +1,9 @@
-package com.healthy.food.utils;
+package com.healthy.food.util;
 
 import com.google.gson.Gson;
-import com.healthy.food.entities.Ingredient;
-import com.healthy.food.entities.Meal;
-import com.healthy.food.entities.Measure;
+import com.healthy.food.model.Ingredient;
+import com.healthy.food.model.Meal;
+import com.healthy.food.model.Measure;
 import org.json.JSONObject;
 
 import java.io.IOException;

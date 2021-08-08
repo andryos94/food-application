@@ -1,4 +1,4 @@
-package com.healthy.food.providers;
+package com.healthy.food.provider;
 
 public interface IDummyDataProvider {
 }

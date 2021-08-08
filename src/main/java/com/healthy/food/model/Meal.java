@@ -1,4 +1,4 @@
-package com.healthy.food.entities;
+package com.healthy.food.model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;

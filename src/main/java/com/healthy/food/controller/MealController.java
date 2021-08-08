@@ -1,7 +1,7 @@
-package com.healthy.food.controllers;
+package com.healthy.food.controller;
 
-import com.healthy.food.entities.Meal;
-import com.healthy.food.services.MealService;
+import com.healthy.food.model.Meal;
+import com.healthy.food.service.IMealService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,7 @@ import java.util.List;
 public class MealController {
 
     @Autowired
-    private MealService mealService;
+    private IMealService mealService;
 
     @GetMapping("/random")
     public Meal getRandomMeal() {
@@ -23,26 +23,11 @@ public class MealController {
     }
 
     @GetMapping("/search")
-    public List<Meal> getAllMealsFiltered(@RequestParam(value="ingredient", required = false) Long ingredientID,
+    public List<Meal> getAllMealsFiltered(@RequestParam(value = "ingredient", required = false) Long ingredientID,
                                           @RequestParam(value = "firstLetter", required = false) String firstLetter,
                                           @RequestParam(value = "category", required = false) String category,
                                           @RequestParam(value = "area", required = false) String area) {
-        if (ingredientID != null) {
-            return mealService.getAllMealsFilteredByIngredientID(ingredientID);
-        }
-
-        if (firstLetter != null) {
-            return mealService.getAllMealsFilteredByFirstLetterPartialOrFullName(firstLetter);
-        }
-
-        if (category != null) {
-            return mealService.getAllMealsFilteredByCategory(category);
-        }
-
-        if (area != null) {
-            return mealService.getAllMealsFilteredByArea(area);
-        }
-        return null;
+        return mealService.getAllMealsFiltered(ingredientID, firstLetter, category, area);
     }
 
 }
