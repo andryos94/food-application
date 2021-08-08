@@ -19,6 +19,4 @@ public class Measure {
     private Long id;
     private String value;
 
-    @ManyToOne
-    private Meal meal;
 }

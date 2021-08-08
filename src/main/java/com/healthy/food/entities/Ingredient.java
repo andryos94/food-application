@@ -19,6 +19,4 @@ public class Ingredient {
     private Long id;
     private String name;
 
-    @ManyToOne
-    private Meal meal;
 }
