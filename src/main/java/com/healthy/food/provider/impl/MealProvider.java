@@ -1,68 +1,88 @@
 package com.healthy.food.provider.impl;
 
-import com.healthy.food.model.Ingredient;
+import com.healthy.food.api.IMealDbApi;
 import com.healthy.food.model.Meal;
 import com.healthy.food.provider.IMealProvider;
 import com.healthy.food.repository.IIngredientRepository;
 import com.healthy.food.repository.IMealRepository;
-import com.healthy.food.util.HttpClientConnection;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Configuration
-@ComponentScan
+@Component
 public class MealProvider implements IMealProvider {
-    private static final String API = "https://www.themealdb.com/api";
+  private final IMealRepository mealRepository;
+  private final IIngredientRepository ingredientRepository;
+  private final IMealDbApi mealDbApi;
 
-    private IMealRepository mealRepository;
-    private IIngredientRepository ingredientRepository;
+  public MealProvider(
+      IMealRepository mealRepository,
+      IIngredientRepository ingredientRepository,
+      IMealDbApi mealDbApi) {
+    this.mealRepository = mealRepository;
+    this.ingredientRepository = ingredientRepository;
+    this.mealDbApi = mealDbApi;
+  }
 
-    @Autowired
-    public MealProvider(IMealRepository mealRepository, IIngredientRepository ingredientRepository) {
-        this.mealRepository = mealRepository;
-        this.ingredientRepository = ingredientRepository;
-    }
+  @Override
+  public Meal getMeal() {
+    return mealDbApi.getRandomMeal();
+  }
 
-    @Override
-    public Meal getMeal(String endpoint) {
-        return HttpClientConnection.getModel(Meal.class, API, endpoint);
-    }
+  private List<Meal> getAllMealsFilteredByIngredientID(Long ingredientID, List<Meal> meals) {
+    final var ingredientFound = ingredientRepository.findById(ingredientID);
+    return ingredientFound
+        .map(
+            ingredient ->
+                meals.stream()
+                    .filter(e -> e.getIngredients().contains(ingredient))
+                    .collect(Collectors.toList()))
+        .orElseGet(List::of);
+  }
 
-    @Override
-    public List<Meal> getAllMealsFilteredByIngredientID(Long ingredientID) {
-        Ingredient ingredientFound = ingredientRepository.findById(ingredientID).get();
-        List<Meal> listOfMeals = (List<Meal>) mealRepository.findAll();
-        return listOfMeals.stream()
-                .filter(e -> e.getIngredients().contains(ingredientFound))
-                .collect(Collectors.toList());
-    }
+  private List<Meal> getAllMealsFilteredByFirstLetterPartialOrFullName(
+      String firstLetter, List<Meal> meals) {
+    return meals.stream()
+        .filter(e -> e.getName().startsWith(firstLetter))
+        .sorted()
+        .collect(Collectors.toList());
+  }
 
-    @Override
-    public List<Meal> getAllMealsFilteredByFirstLetterPartialOrFullName(String firstLetter) {
-        List<Meal> listOfMeals = (List<Meal>) mealRepository.findAll();
-        return listOfMeals.stream()
-                .filter(e -> e.getName().startsWith(firstLetter))
-                .sorted()
-                .collect(Collectors.toList());
-    }
+  private List<Meal> getAllMealsFilteredByCategory(String category, List<Meal> meals) {
+    return meals.stream()
+        .filter(e -> e.getCategory().equals(category))
+        .collect(Collectors.toList());
+  }
 
-    @Override
-    public List<Meal> getAllMealsFilteredByCategory(String category) {
-        List<Meal> listOfMeals = (List<Meal>) mealRepository.findAll();
-        return listOfMeals.stream()
-                .filter(e -> e.getCategory().equals(category))
-                .collect(Collectors.toList());
-    }
+  private List<Meal> getAllMealsFilteredByArea(String area, List<Meal> meals) {
+    return meals.stream().filter(e -> e.getArea().equals(area)).collect(Collectors.toList());
+  }
 
-    @Override
-    public List<Meal> getAllMealsFilteredByArea(String area) {
-        List<Meal> listOfMeals = (List<Meal>) mealRepository.findAll();
-        return listOfMeals.stream()
-                .filter(e -> e.getArea().equals(area))
-                .collect(Collectors.toList());
-    }
+  @Override
+  public List<Meal> getAllMealsFiltered(
+      Long ingredientID, String firstLetter, String category, String area) {
+    return filterMeals(ingredientID, firstLetter, category, area);
+  }
+
+  private List<Meal> filterMeals(
+      Long ingredientID, String firstLetter, String category, String area) {
+    List<Meal> filteredMeals = new ArrayList<>();
+    final var listOfMeals = mealRepository.findAll();
+
+    if (ingredientID != null)
+      filteredMeals.addAll(getAllMealsFilteredByIngredientID(ingredientID, listOfMeals));
+
+    if (firstLetter != null)
+      filteredMeals.addAll(
+          getAllMealsFilteredByFirstLetterPartialOrFullName(firstLetter, listOfMeals));
+
+    if (category != null)
+      filteredMeals.addAll(getAllMealsFilteredByCategory(category, listOfMeals));
+
+    if (area != null) filteredMeals.addAll(getAllMealsFilteredByArea(area, listOfMeals));
+
+    return filteredMeals;
+  }
 }

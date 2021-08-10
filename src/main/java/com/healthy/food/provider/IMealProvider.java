@@ -5,13 +5,8 @@ import com.healthy.food.model.Meal;
 import java.util.List;
 
 public interface IMealProvider {
-    Meal getMeal(String endpoint);
+  Meal getMeal();
 
-    List<Meal> getAllMealsFilteredByIngredientID(Long ingredientID);
-
-    List<Meal> getAllMealsFilteredByFirstLetterPartialOrFullName(String firstLetter);
-
-    List<Meal> getAllMealsFilteredByCategory(String category);
-
-    List<Meal> getAllMealsFilteredByArea(String area);
+  List<Meal> getAllMealsFiltered(
+      Long ingredientID, String firstLetter, String category, String area);
 }

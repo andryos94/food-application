@@ -1,60 +1,66 @@
 package com.healthy.food.model;
 
 import com.google.gson.annotations.SerializedName;
-import lombok.Data;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.annotation.Id;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
-@Configuration
-@ComponentScan
+@Entity
+@Table(name = "meal")
+@Getter
+@Setter
 public class Meal {
+  @Id
+  @GeneratedValue
+  @Column(name = "id")
+  @SerializedName("idMeal")
+  private Integer id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @SerializedName("idMeal")
-    private Long id;
+  @SerializedName("strMeal")
+  private String name;
 
-    @SerializedName("strMeal")
-    private String name;
-    @SerializedName("strCategory")
-    private String category;
-    @SerializedName("strDrinkAlternate")
-    private String drinkAlternate;
-    @SerializedName("strArea")
-    private String area;
+  @SerializedName("strCategory")
+  private String category;
 
-    @Column(length = 1000)
-    @SerializedName("strInstructions")
-    private String instructions;
+  @SerializedName("strDrinkAlternate")
+  private String drinkAlternate;
 
-    @SerializedName("strMealThumb")
-    private String mealThumb;
-    @SerializedName("strTags")
-    private String tags;
-    @SerializedName("strYoutube")
-    private String urlYoutube;
+  @SerializedName("strArea")
+  private String area;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ingredient_id")
-    @SerializedName("strIngredients")
-    private List<Ingredient> ingredients = new ArrayList<>();
+  @Column(length = 1000)
+  @SerializedName("strInstructions")
+  private String instructions;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "measure_id")
-    @SerializedName("strMeasures")
-    private List<Measure> measures = new ArrayList<>();
+  @SerializedName("strMealThumb")
+  private String mealThumb;
 
-    @SerializedName("strSource")
-    private String source;
-    @SerializedName("strImageSource")
-    private String imageSource;
-    @SerializedName("dateModified")
-    private Date dateModified;
+  @SerializedName("strTags")
+  private String tags;
+
+  @SerializedName("strYoutube")
+  private String urlYoutube;
+
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "ingredient_id")
+  @SerializedName("strIngredients")
+  private List<Ingredient> ingredients = new ArrayList<>();
+
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "measure_id")
+  @SerializedName("strMeasures")
+  private List<Measure> measures = new ArrayList<>();
+
+  @SerializedName("strSource")
+  private String source;
+
+  @SerializedName("strImageSource")
+  private String imageSource;
+
+  @SerializedName("dateModified")
+  private Date dateModified;
 }
