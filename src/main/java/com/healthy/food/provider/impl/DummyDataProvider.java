@@ -1,11 +1,22 @@
 package com.healthy.food.provider.impl;
 
+import com.healthy.food.api.IMealDbApi;
+import com.healthy.food.model.Category;
 import com.healthy.food.provider.IDummyDataProvider;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
-@ComponentScan
+import java.util.List;
+
+@Component
 public class DummyDataProvider implements IDummyDataProvider {
-  // TODO: fetch all categories from API -> return List<Category>
+    private final IMealDbApi mealDbApi;
+
+    public DummyDataProvider(IMealDbApi mealDbApi) {
+        this.mealDbApi = mealDbApi;
+    }
+
+    @Override
+    public List<Category> getAllCategoriesMeal() {
+        return mealDbApi.getAllCategoriesMeal();
+    }
 }

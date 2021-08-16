@@ -1,6 +1,8 @@
 package com.healthy.food.service.impl;
 
+import com.healthy.food.model.Category;
 import com.healthy.food.model.Meal;
+import com.healthy.food.provider.IDummyDataProvider;
 import com.healthy.food.provider.IMealProvider;
 import com.healthy.food.service.IMealService;
 import org.springframework.stereotype.Service;
@@ -9,11 +11,12 @@ import java.util.List;
 
 @Service
 public class MealService implements IMealService {
-
+  private final IDummyDataProvider dummyDataProvider;
   private final IMealProvider mealProvider;
 
-  public MealService(IMealProvider mealProvider) {
+  public MealService(IMealProvider mealProvider, IDummyDataProvider dummyDataProvider) {
     this.mealProvider = mealProvider;
+    this.dummyDataProvider = dummyDataProvider;
   }
 
   @Override
@@ -26,5 +29,10 @@ public class MealService implements IMealService {
   @Override
   public Meal getRandomMeal() {
     return mealProvider.getMeal();
+  }
+
+  @Override
+  public List<Category> getAllCategoriesMeal() {
+    return dummyDataProvider.getAllCategoriesMeal();
   }
 }

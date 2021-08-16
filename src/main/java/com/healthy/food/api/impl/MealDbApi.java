@@ -2,13 +2,14 @@ package com.healthy.food.api.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import com.healthy.food.api.IMealDbApi;
-import com.healthy.food.model.Ingredient;
+import com.healthy.food.model.Category;
 import com.healthy.food.model.Meal;
-import com.healthy.food.model.Measure;
+import com.healthy.food.model.apiModels.MealApiModel;
 import com.healthy.food.util.MealDbFixtures;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -34,23 +35,8 @@ public class MealDbApi implements IMealDbApi {
 
       var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-      // TODO: move this to another class
-      JsonDeserializer<Meal> deserializer =
-          (json, typeOfT, context) -> {
-            JsonObject jsonObject = json.getAsJsonObject();
-
-            List<Ingredient> ingredients = new ArrayList<>();
-            List<Measure> measures = new ArrayList<>();
-
-            // get ingredients 1..20
-            // get measures 1..20
-
-            return null;
-          };
-
       GsonBuilder gsonBuilder = new GsonBuilder();
-      gsonBuilder.registerTypeAdapter(Meal.class, deserializer);
-      //      gsonBuilder.registerTypeAdapter(Meal.class, MealApiModel.getDeserializer());
+      gsonBuilder.registerTypeAdapter(Meal.class, MealApiModel.getDeserializer());
 
       Gson customGson = gsonBuilder.create();
 
@@ -63,20 +49,30 @@ public class MealDbApi implements IMealDbApi {
     return null;
   }
 
-  private List<Ingredient> extractIngredientsFromMealJson(JsonObject mealJsonObject) {
-    // loop 1..20 -> non null && non empty
-    // list.add(extractIngredientFromMealJson(i))
-    return List.of();
+  @Override
+  public List<Category> getAllCategoriesMeal() {
+    try {
+      final var client = HttpClient.newHttpClient();
+      final var allCategoriesMeal = API + MealDbFixtures.ALL_CATEGORIES_MEAL_ENDPOINT;
+      final var request =
+              HttpRequest.newBuilder(URI.create(allCategoriesMeal))
+                      .method("GET", HttpRequest.BodyPublishers.noBody())
+                      .build();
+
+      var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+      JSONObject jsonObject = new JSONObject(response.body());
+      JSONArray jsonCategories = jsonObject.getJSONArray("categories");
+      List<Category> categoryList = new ArrayList<>();
+      for (Object jsonObj : jsonCategories) {
+          categoryList.add(new Gson().fromJson((JsonElement) jsonObj, Category.class));
+      }
+      return categoryList;
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+
+    return null;
   }
-
-  // Ingredient extractIngredientFromMealJson(int index)
-
-  private List<Measure> extractMeasuresFromMealJson(JsonObject mealJsonObject) {
-    // loop 1..20 -> non null && non empty
-    return List.of();
-  }
-
-  // TODO: implement method for List all meal categories
-  // www.themealdb.com/api/json/v1/1/categories.php
 
 }

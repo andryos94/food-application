@@ -3,6 +3,7 @@ package com.healthy.food.service.impl;
 import com.healthy.food.api.IMealDbApi;
 import com.healthy.food.model.Ingredient;
 import com.healthy.food.model.Meal;
+import com.healthy.food.provider.impl.DummyDataProvider;
 import com.healthy.food.provider.impl.MealProvider;
 import com.healthy.food.repository.IIngredientRepository;
 import com.healthy.food.repository.IMealRepository;
@@ -57,7 +58,8 @@ class MealServiceTest {
     when(mealRepository.findAll()).thenReturn(listOfMeals);
 
     MealProvider mealProvider = new MealProvider(mealRepository, ingredientRepository, mealDbApi);
-    MealService mealService = new MealService(mealProvider);
+    DummyDataProvider dummyDataProvider = new DummyDataProvider(mealDbApi);
+    MealService mealService = new MealService(mealProvider, dummyDataProvider);
 
     assertEquals(List.of(meal1), mealService.getAllMealsFiltered(2222L, null, null, null));
   }

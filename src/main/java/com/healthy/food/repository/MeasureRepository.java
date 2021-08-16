@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MeasureRepository extends CrudRepository<Measure, Long> {
-  List<Measure> saveAll(List<Measure> measures);
+  //List<Measure> saveAll(List<Measure> measures);
 }
