@@ -6,10 +6,11 @@ import com.healthy.food.model.Meal;
 import java.util.List;
 
 public interface IMealService {
-    List<Meal> getAllMealsFiltered(Long ingredientID, String firstLetter, String category, String area);
+  List<Meal> getAllMealsFiltered(
+      Long ingredientID, String firstLetter, String category, String area) throws Exception;
 
-    //facade endpoint based on a request to the free api www.themealdb.com
-    Meal getRandomMeal();
+  // facade endpoint based on a request to the free api www.themealdb.com
+  Meal getRandomMeal();
 
-    List<Category> getAllCategoriesMeal();
+  List<Category> getAllCategoriesMeal();
 }

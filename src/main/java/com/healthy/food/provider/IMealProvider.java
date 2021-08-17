@@ -8,5 +8,5 @@ public interface IMealProvider {
   Meal getMeal();
 
   List<Meal> getAllMealsFiltered(
-      Long ingredientID, String firstLetter, String category, String area);
+      Long ingredientID, String firstLetter, String category, String area) throws Exception;
 }

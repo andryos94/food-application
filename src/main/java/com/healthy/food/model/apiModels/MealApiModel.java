@@ -1,17 +1,16 @@
 package com.healthy.food.model.apiModels;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonObject;
 import com.healthy.food.model.Ingredient;
 import com.healthy.food.model.Meal;
 import com.healthy.food.model.Measure;
 import com.mysql.cj.util.StringUtils;
 import lombok.Data;
-import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Data
@@ -21,25 +20,22 @@ public class MealApiModel {
   // custom deserializer (copy from MealProvider)
   public static JsonDeserializer<Meal> getDeserializer() {
     JsonDeserializer<Meal> deserializer =
-            new JsonDeserializer<Meal>() {
-              @Override
-              public Meal deserialize(JsonElement json, Type Meal, JsonDeserializationContext context) throws JsonParseException {
-                JsonObject jsonObject = json.getAsJsonObject();
+        (json, Meal, context) -> {
+          JsonObject jsonObject = json.getAsJsonObject();
 
-                List<Ingredient> ingredients = new ArrayList<>();
-                List<Measure> measures = new ArrayList<>();
+          List<Ingredient> ingredients = new ArrayList<>();
+          List<Measure> measures = new ArrayList<>();
 
-                // get ingredients 1..20
-                ingredients.addAll(MealApiModel.extractIngredientsFromMealJson(jsonObject));
-                // get measures 1..20
-                measures.addAll(MealApiModel.extractMeasuresFromMealJson(jsonObject));
+          // get ingredients 1..20
+          ingredients.addAll(MealApiModel.extractIngredientsFromMealJson(jsonObject));
+          // get measures 1..20
+          measures.addAll(MealApiModel.extractMeasuresFromMealJson(jsonObject));
 
-                Meal meal = new Gson().fromJson(jsonObject, Meal.class);
-                meal.setMeasures(measures);
-                meal.setIngredients(ingredients);
-                return meal;
-              }
-            };
+          Meal meal = new Gson().fromJson(jsonObject, Meal.class);
+          meal.setMeasures(measures);
+          meal.setIngredients(ingredients);
+          return meal;
+        };
     return deserializer;
   }
 
@@ -48,7 +44,7 @@ public class MealApiModel {
       List<Ingredient> ingredients = new ArrayList<>();
       for (int i = 1; i <= 20; i++) {
         Ingredient ingredient = extractIngredientFromMealJson(i, mealJsonObject);
-        if (ingredient != null){
+        if (ingredient != null) {
           ingredients.add(ingredient);
         }
       }
@@ -74,7 +70,7 @@ public class MealApiModel {
       List<Measure> measures = new ArrayList<>();
       for (int i = 1; i <= 20; i++) {
         Measure measure = extractMeasureFromMealJson(i, mealJsonObject);
-        if (measure != null){
+        if (measure != null) {
           measures.add(measure);
         }
       }

@@ -21,7 +21,7 @@ public class MealService implements IMealService {
 
   @Override
   public List<Meal> getAllMealsFiltered(
-      Long ingredientID, String firstLetter, String category, String area) {
+      Long ingredientID, String firstLetter, String category, String area) throws Exception {
     return mealProvider.getAllMealsFiltered(ingredientID, firstLetter, category, area);
   }
 

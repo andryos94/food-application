@@ -1,68 +1,77 @@
 package com.healthy.food.service.impl;
 
-import com.healthy.food.api.IMealDbApi;
 import com.healthy.food.model.Ingredient;
-import com.healthy.food.model.Meal;
-import com.healthy.food.provider.impl.DummyDataProvider;
-import com.healthy.food.provider.impl.MealProvider;
+import com.healthy.food.provider.IDummyDataProvider;
+import com.healthy.food.provider.IMealProvider;
 import com.healthy.food.repository.IIngredientRepository;
 import com.healthy.food.repository.IMealRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class MealServiceTest {
+  private MealService mealService;
 
-  @Test
-  void getAllMealsFilteredByIngredient() {
-    IIngredientRepository ingredientRepository = mock(IIngredientRepository.class);
-    IMealRepository mealRepository = mock(IMealRepository.class);
-    IMealDbApi mealDbApi = mock(IMealDbApi.class);
+  private final IIngredientRepository ingredientRepository = mock(IIngredientRepository.class);
+  private final IMealRepository mealRepository = mock(IMealRepository.class);
+  private final IMealProvider mealProvider = mock(IMealProvider.class);
+  private final IDummyDataProvider dummyDataProvider = mock(IDummyDataProvider.class);
 
-    Ingredient ingredientToFind = new Ingredient();
-    ingredientToFind.setId(2222);
-    ingredientToFind.setName("curry");
+  private final Ingredient ingredient = mock(Ingredient.class);
 
-    Ingredient ingr1 = new Ingredient();
-    ingr1.setId(1111);
-    ingr1.setName("piper");
-    Ingredient ingr2 = new Ingredient();
-    ingr2.setId(2222);
-    ingr2.setName("curry2");
-
-    List<Ingredient> allIngredientsMeal1 = new ArrayList<>();
-    allIngredientsMeal1.add(ingredientToFind);
-    allIngredientsMeal1.add(ingr1);
-
-    List<Ingredient> allIngredientsMeal2 = new ArrayList<>();
-    allIngredientsMeal2.add(ingr2);
-    allIngredientsMeal2.add(ingr1);
-
-    Meal meal1 = new Meal();
-    meal1.setIngredients(allIngredientsMeal1);
-
-    Meal meal2 = new Meal();
-    meal2.setIngredients(allIngredientsMeal2);
-
-    List<Meal> listOfMeals = new ArrayList<>();
-    listOfMeals.add(meal1);
-    listOfMeals.add(meal2);
-
-    when(ingredientRepository.findById(any())).thenReturn(java.util.Optional.of(ingredientToFind));
-    when(mealRepository.findAll()).thenReturn(listOfMeals);
-
-    MealProvider mealProvider = new MealProvider(mealRepository, ingredientRepository, mealDbApi);
-    DummyDataProvider dummyDataProvider = new DummyDataProvider(mealDbApi);
-    MealService mealService = new MealService(mealProvider, dummyDataProvider);
-
-    assertEquals(List.of(meal1), mealService.getAllMealsFiltered(2222L, null, null, null));
+  @BeforeEach
+  void setUp() {
+    this.mealService = new MealService(mealProvider, dummyDataProvider);
   }
+
+  // TODO: getAllMealsFiltered -> succes
+  // TODO: getAllMealsFiltered -> should throw exception
+  //  @SneakyThrows
+  //  @Test
+  //  void getAllMealsFilteredByIngredient() {
+  //    //    when(ingredient.getId()).thenReturn(2222);
+  //    //    when(ingredient.getName()).thenReturn("curry");
+  //
+  //    Ingredient ingr1 = new Ingredient();
+  //    ingr1.setId(1111);
+  //    ingr1.setName("piper");
+  //    Ingredient ingr2 = new Ingredient();
+  //    ingr2.setId(2222);
+  //    ingr2.setName("curry");
+  //    Ingredient ingr3 = new Ingredient();
+  //    ingr3.setId(3333);
+  //    ingr3.setName("salt");
+  //
+  //    var allIngredients = List.of(ingr2, ingr1);
+  //
+  //    Meal meal1 = new Meal();
+  //    meal1.setIngredients(allIngredients);
+  //
+  //    Meal meal2 = new Meal();
+  //    meal2.setIngredients(allIngredients);
+  //
+  //    Meal meal3 = new Meal();
+  //    meal3.setIngredients(List.of(ingr3));
+  //
+  //    List<Meal> listOfMeals = List.of(meal1, meal2, meal3);
+  //
+  //    when(ingredientRepository.findById(any())).thenReturn(Optional.of(ingr2));
+  //    when(mealRepository.findAll()).thenReturn(listOfMeals);
+  //    when(mealProvider.getAllMealsFiltered(2222L, null, null, null)).thenReturn(listOfMeals);
+  //
+  //    final var result = mealService.getAllMealsFiltered(2222L, null, null, null);
+  //
+  //    assertEquals(2, result.size());
+  //    for (Meal meal : result) {
+  //      var ingredients = meal.getIngredients();
+  //
+  //      assertTrue(ingredients.stream().anyMatch(ing -> ing.getName().equals(ingr1.getName())));
+  //    }
+  //  }
+
+  // TODO: assertThrows ->  doThrow(new
+  // Exception("blabla")).when(mealProvider).getAllMealsFiltered(any()); helper
 
   @Test
   void getAllMealsFilteredAlphabetical() {}

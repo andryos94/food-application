@@ -62,14 +62,16 @@ public class MealProvider implements IMealProvider {
 
   @Override
   public List<Meal> getAllMealsFiltered(
-      Long ingredientID, String firstLetter, String category, String area) {
+      Long ingredientID, String firstLetter, String category, String area) throws Exception {
     return filterMeals(ingredientID, firstLetter, category, area);
   }
 
   private List<Meal> filterMeals(
-      Long ingredientID, String firstLetter, String category, String area) {
+      Long ingredientID, String firstLetter, String category, String area) throws Exception {
     List<Meal> filteredMeals = new ArrayList<>();
     final var listOfMeals = mealRepository.findAll();
+
+    validateParameters(ingredientID, firstLetter, category, area);
 
     if (ingredientID != null)
       filteredMeals.addAll(getAllMealsFilteredByIngredientID(ingredientID, listOfMeals));
@@ -84,5 +86,13 @@ public class MealProvider implements IMealProvider {
     if (area != null) filteredMeals.addAll(getAllMealsFilteredByArea(area, listOfMeals));
 
     return filteredMeals;
+  }
+
+  private void validateParameters(
+      Long ingredientID, String firstLetter, String category, String area) throws Exception {
+    if (ingredientID == null && firstLetter == null && category == null && area == null)
+      throw new Exception(
+          "At least one filtering parameter must be provided."); // TODO: create
+                                                                 // InvalidFilteringRequestException.class
   }
 }
