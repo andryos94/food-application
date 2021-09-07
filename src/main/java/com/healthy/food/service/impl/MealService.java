@@ -5,6 +5,7 @@ import com.healthy.food.model.Meal;
 import com.healthy.food.provider.IDummyDataProvider;
 import com.healthy.food.provider.IMealProvider;
 import com.healthy.food.service.IMealService;
+import com.healthy.food.util.InvalidFilteringRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class MealService implements IMealService {
 
   @Override
   public List<Meal> getAllMealsFiltered(
-      Long ingredientID, String firstLetter, String category, String area) throws Exception {
+      Long ingredientID, String firstLetter, String category, String area) throws InvalidFilteringRequestException {
     return mealProvider.getAllMealsFiltered(ingredientID, firstLetter, category, area);
   }
 

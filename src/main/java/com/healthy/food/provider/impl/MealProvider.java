@@ -5,6 +5,7 @@ import com.healthy.food.model.Meal;
 import com.healthy.food.provider.IMealProvider;
 import com.healthy.food.repository.IIngredientRepository;
 import com.healthy.food.repository.IMealRepository;
+import com.healthy.food.util.InvalidFilteringRequestException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -62,12 +63,12 @@ public class MealProvider implements IMealProvider {
 
   @Override
   public List<Meal> getAllMealsFiltered(
-      Long ingredientID, String firstLetter, String category, String area) throws Exception {
+      Long ingredientID, String firstLetter, String category, String area) throws InvalidFilteringRequestException {
     return filterMeals(ingredientID, firstLetter, category, area);
   }
 
   private List<Meal> filterMeals(
-      Long ingredientID, String firstLetter, String category, String area) throws Exception {
+      Long ingredientID, String firstLetter, String category, String area) throws InvalidFilteringRequestException {
     List<Meal> filteredMeals = new ArrayList<>();
     final var listOfMeals = mealRepository.findAll();
 
@@ -89,10 +90,9 @@ public class MealProvider implements IMealProvider {
   }
 
   private void validateParameters(
-      Long ingredientID, String firstLetter, String category, String area) throws Exception {
+      Long ingredientID, String firstLetter, String category, String area) throws InvalidFilteringRequestException {
     if (ingredientID == null && firstLetter == null && category == null && area == null)
-      throw new Exception(
-          "At least one filtering parameter must be provided."); // TODO: create
-                                                                 // InvalidFilteringRequestException.class
+      throw new InvalidFilteringRequestException(
+          "At least one filtering parameter must be provided.");
   }
 }

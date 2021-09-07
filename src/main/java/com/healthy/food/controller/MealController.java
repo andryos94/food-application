@@ -3,6 +3,7 @@ package com.healthy.food.controller;
 import com.healthy.food.model.Category;
 import com.healthy.food.model.Meal;
 import com.healthy.food.service.IMealService;
+import com.healthy.food.util.InvalidFilteringRequestException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,7 +37,7 @@ public class MealController {
       @RequestParam(value = "firstLetter", required = false) String firstLetter,
       @RequestParam(value = "category", required = false) String category,
       @RequestParam(value = "area", required = false) String area)
-      throws Exception {
+      throws InvalidFilteringRequestException {
     return mealService.getAllMealsFiltered(ingredientID, firstLetter, category, area);
   }
 }

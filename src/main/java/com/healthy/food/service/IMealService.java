@@ -2,12 +2,13 @@ package com.healthy.food.service;
 
 import com.healthy.food.model.Category;
 import com.healthy.food.model.Meal;
+import com.healthy.food.util.InvalidFilteringRequestException;
 
 import java.util.List;
 
 public interface IMealService {
   List<Meal> getAllMealsFiltered(
-      Long ingredientID, String firstLetter, String category, String area) throws Exception;
+      Long ingredientID, String firstLetter, String category, String area) throws InvalidFilteringRequestException;
 
   // facade endpoint based on a request to the free api www.themealdb.com
   Meal getRandomMeal();

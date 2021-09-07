@@ -5,6 +5,7 @@ import com.healthy.food.model.Ingredient;
 import com.healthy.food.model.Meal;
 import com.healthy.food.repository.IIngredientRepository;
 import com.healthy.food.repository.IMealRepository;
+import com.healthy.food.util.InvalidFilteringRequestException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -78,7 +79,7 @@ class MealProviderTest {
 
     final var exception =
         assertThrows(
-            Exception.class, () -> mealProvider.getAllMealsFiltered(null, null, null, null));
+            InvalidFilteringRequestException.class, () -> mealProvider.getAllMealsFiltered(null, null, null, null));
     assertNotNull(exception);
   }
 }
