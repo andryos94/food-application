@@ -7,7 +7,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories("com.healthy.food.repository")
-@ComponentScan("com.healthy.food.api")
+@ComponentScan({
+        "com.healthy.food.api",
+        "com.healthy.food.controller",
+        "com.healthy.food.service",
+        "com.healthy.food.provider"
+})
 public class FoodApplication {
 
   public static void main(String[] args) {

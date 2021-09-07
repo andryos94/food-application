@@ -2,21 +2,19 @@ package com.healthy.food.api.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.healthy.food.api.IMealDbApi;
 import com.healthy.food.model.Category;
 import com.healthy.food.model.Meal;
+import com.healthy.food.model.apiModels.MealApiCategories;
 import com.healthy.food.model.apiModels.MealApiModel;
+import com.healthy.food.model.apiModels.MealApiRandom;
 import com.healthy.food.util.MealDbFixtures;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -40,8 +38,8 @@ public class MealDbApi implements IMealDbApi {
 
       Gson customGson = gsonBuilder.create();
 
-      return customGson.fromJson(response.body(), Meal.class);
-      // parsam json din response
+      MealApiRandom mealApiRandom = customGson.fromJson(response.body(), MealApiRandom.class);
+      return mealApiRandom.getMeals().get(0);
     } catch (Exception exception) {
       exception.printStackTrace();
     }
@@ -61,13 +59,14 @@ public class MealDbApi implements IMealDbApi {
 
       var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-      JSONObject jsonObject = new JSONObject(response.body());
+      MealApiCategories categories = new Gson().fromJson(response.body(), MealApiCategories.class);
+      /*JSONObject jsonObject = new JSONObject(response.body());
       JSONArray jsonCategories = jsonObject.getJSONArray("categories");
       List<Category> categoryList = new ArrayList<>();
       for (Object jsonObj : jsonCategories) {
           categoryList.add(new Gson().fromJson((JsonElement) jsonObj, Category.class));
-      }
-      return categoryList;
+      }*/
+      return categories.getAllCategories();
     } catch (Exception exception) {
       exception.printStackTrace();
     }
