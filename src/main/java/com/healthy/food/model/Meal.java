@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "meal")
 @Getter
 @Setter
-public class Meal {
+public class Meal implements Comparable{
   @Id
   @GeneratedValue
   @Column(name = "id")
@@ -63,4 +63,9 @@ public class Meal {
 
   @SerializedName("dateModified")
   private Date dateModified;
+
+  @Override
+  public int compareTo(Object o) {
+    return this.name.compareTo(((Meal) o).getName());
+  }
 }
