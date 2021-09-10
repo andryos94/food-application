@@ -19,59 +19,53 @@ import java.util.List;
 
 @Component
 public class MealDbApi implements IMealDbApi {
-  private static final String API = "https://www.themealdb.com/api";
+    private static final String API = "https://www.themealdb.com/api";
 
-  @Override
-  public Meal getRandomMeal() {
-    try {
-      final var client = HttpClient.newHttpClient();
-      final var randomMeal = API + MealDbFixtures.RANDOM_MEAL_ENDPOINT;
-      final var request =
-          HttpRequest.newBuilder(URI.create(randomMeal))
-              .method("GET", HttpRequest.BodyPublishers.noBody())
-              .build();
+    @Override
+    public Meal getRandomMeal() {
+        try {
+            final var client = HttpClient.newHttpClient();
+            final var randomMeal = API + MealDbFixtures.RANDOM_MEAL_ENDPOINT;
+            final var request =
+                    HttpRequest.newBuilder(URI.create(randomMeal))
+                            .method("GET", HttpRequest.BodyPublishers.noBody())
+                            .build();
 
-      var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-      GsonBuilder gsonBuilder = new GsonBuilder();
-      gsonBuilder.registerTypeAdapter(Meal.class, MealApiModel.getDeserializer());
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeAdapter(Meal.class, MealApiModel.getDeserializer());
 
-      Gson customGson = gsonBuilder.create();
+            Gson customGson = gsonBuilder.create();
 
-      MealApiRandom mealApiRandom = customGson.fromJson(response.body(), MealApiRandom.class);
-      return mealApiRandom.getMeals().get(0);
-    } catch (Exception exception) {
-      exception.printStackTrace();
+            MealApiRandom mealApiRandom = customGson.fromJson(response.body(), MealApiRandom.class);
+            return mealApiRandom.getMeals().get(0);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return null;
     }
 
-    return null;
-  }
+    @Override
+    public List<Category> getAllCategoriesMeal() {
+        try {
+            final var client = HttpClient.newHttpClient();
+            final var allCategoriesMeal = API + MealDbFixtures.ALL_CATEGORIES_MEAL_ENDPOINT;
+            final var request =
+                    HttpRequest.newBuilder(URI.create(allCategoriesMeal))
+                            .method("GET", HttpRequest.BodyPublishers.noBody())
+                            .build();
 
-  @Override
-  public List<Category> getAllCategoriesMeal() {
-    try {
-      final var client = HttpClient.newHttpClient();
-      final var allCategoriesMeal = API + MealDbFixtures.ALL_CATEGORIES_MEAL_ENDPOINT;
-      final var request =
-              HttpRequest.newBuilder(URI.create(allCategoriesMeal))
-                      .method("GET", HttpRequest.BodyPublishers.noBody())
-                      .build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-      var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            MealApiCategories categories = new Gson().fromJson(response.body(), MealApiCategories.class);
+            return categories.getAllCategories();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
 
-      MealApiCategories categories = new Gson().fromJson(response.body(), MealApiCategories.class);
-      /*JSONObject jsonObject = new JSONObject(response.body());
-      JSONArray jsonCategories = jsonObject.getJSONArray("categories");
-      List<Category> categoryList = new ArrayList<>();
-      for (Object jsonObj : jsonCategories) {
-          categoryList.add(new Gson().fromJson((JsonElement) jsonObj, Category.class));
-      }*/
-      return categories.getAllCategories();
-    } catch (Exception exception) {
-      exception.printStackTrace();
+        return null;
     }
-
-    return null;
-  }
 
 }
